@@ -1,7 +1,8 @@
-package com.android.feedpoc
+package com.android.feedpoc.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.android.feedpoc.R
 
 class FeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
