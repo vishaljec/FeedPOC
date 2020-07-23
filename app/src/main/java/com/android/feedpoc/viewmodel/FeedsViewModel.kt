@@ -13,7 +13,7 @@ class FeedsViewModel : ViewModel() {
         FeedRepository().loadFeeds()
     }
 
-    fun getFeeds(): LiveData<Result> {
+    fun feeds(): LiveData<Result> {
         return feedsLiveData
     }
 
