@@ -40,6 +40,7 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             setOnRefreshListener(this@FeedsFragment)
         }
         feedsRecyclerView(view)
+        getFeeds()
         observeFeeds()
     }
 
