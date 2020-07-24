@@ -46,5 +46,4 @@ class FeedsAdapter(private val context: Context) :
         this.feedsList = feedsList
         notifyDataSetChanged()
     }
-
 }
