@@ -22,7 +22,6 @@ class FeedsAdapter(private val context: Context, private val listener: (FeedRow)
             itemView.tv_desc.text = feed.description
             GlideApp.with(context)
                 .load(feed.imageHref)
-                .override(250, 250)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(itemView.iv_feed_image)
         }
