@@ -1,3 +1,7 @@
 package com.android.feedpoc.data.model
 
-class FeedRow(val title: String, val imageHref: String, val description: String)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class FeedRow(val title: String, val imageHref: String, val description: String) : Parcelable

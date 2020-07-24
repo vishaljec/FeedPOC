@@ -10,15 +10,14 @@ import com.android.feedpoc.data.model.FeedRow
 import com.android.feedpoc.glide.GlideApp
 import kotlinx.android.synthetic.main.feed_row.view.*
 
-class FeedsAdapter(private val context: Context) :
+class FeedsAdapter(private val context: Context, private val listener: (FeedRow) -> Unit) :
     RecyclerView.Adapter<FeedsAdapter.FeedsViewHolder>() {
 
     private var feedsList: ArrayList<FeedRow> = ArrayList()
 
     class FeedsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(
-            feed: FeedRow, context: Context
-        ) {
+
+        fun bindItems(feed: FeedRow, context: Context) {
             itemView.tv_title.text = feed.title
             itemView.tv_desc.text = feed.description
             GlideApp.with(context)
@@ -40,6 +39,7 @@ class FeedsAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: FeedsViewHolder, position: Int) {
         holder.bindItems(feedsList[position], context)
+        holder.itemView.setOnClickListener { listener(feedsList[position]) }
     }
 
     fun updateFeedList(feedsList: ArrayList<FeedRow>) {

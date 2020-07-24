@@ -1,4 +1,4 @@
-package com.android.feedpoc.ui
+package com.android.feedpoc.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,41 +8,40 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.feedpoc.R
+import com.android.feedpoc.data.model.FeedRow
 import com.android.feedpoc.data.model.Feeds
 import com.android.feedpoc.data.model.Result
+import com.android.feedpoc.ui.activity.FeedActivity
 import com.android.feedpoc.ui.adapter.FeedsAdapter
 import com.android.feedpoc.util.Constants
 import com.android.feedpoc.viewmodel.FeedsViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_feeds.view.*
 
 
 class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+
     private val feedsViewModel: FeedsViewModel by viewModels()
     private lateinit var feedsAdapter: FeedsAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var feedRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feeds, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.sr_feeds_parent).apply {
-            this.setOnRefreshListener(this@FeedsFragment)
+            setOnRefreshListener(this@FeedsFragment)
         }
-        feedRecyclerView = view.findViewById(R.id.rv_feeds)
-        feedsRecyclerView()
+        feedsRecyclerView(view)
         observeFeeds()
     }
-
 
     private fun getFeeds() {
         if (Constants.isNetworkAvailable(requireActivity()))
@@ -52,17 +51,29 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    private fun feedsRecyclerView() {
-        feedsAdapter = FeedsAdapter(requireActivity())
-        feedRecyclerView.layoutManager = (LinearLayoutManager(requireActivity()))
-        feedRecyclerView.adapter = feedsAdapter
+    private fun feedsRecyclerView(view: View) {
+        feedsAdapter = FeedsAdapter(requireContext()) {
+            startFeedDetailsFragment(it)
+        }
+        val layoutManager = LinearLayoutManager(requireActivity())
+        view.rv_feeds.layoutManager = layoutManager
+        view.rv_feeds.adapter = feedsAdapter
+    }
+
+    private fun startFeedDetailsFragment(item: FeedRow) {
+        requireActivity().supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment, FeedDetailFragment.newInstance(item))
+            addToBackStack(null)
+            commit()
+        }
+
     }
 
     private fun observeFeeds() {
         val feedsObserver = Observer<Result> {
             handleFeedResponse(it)
         }
-        feedsViewModel.feeds().observe(requireActivity(), feedsObserver)
+        feedsViewModel.feeds().observe(viewLifecycleOwner, feedsObserver)
     }
 
     private fun updateTitle(title: String) {
