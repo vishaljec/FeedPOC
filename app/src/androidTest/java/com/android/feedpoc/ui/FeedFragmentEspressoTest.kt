@@ -27,8 +27,8 @@ class FeedFragmentEspressoTest {
     }
 
     @Test
-    fun isErrorSeekBarVisibleOnAppLaunchWhenNoNetworkConnectivity() {
-        onView(withText(CoreMatchers.endsWith("Your device is not connected to internet"))).check(
+    fun isErrorTextVisibleOnAppLaunchWhenNoNetworkConnectivity() {
+        onView(withId(R.id.errorText)).check(
             matches(isDisplayed())
         )
     }
