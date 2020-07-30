@@ -4,26 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.feedpoc.R
-import com.android.feedpoc.data.model.FeedRow
-import com.android.feedpoc.data.model.Feeds
+import com.android.feedpoc.data.model.Country
+import com.android.feedpoc.data.model.Feed
 import com.android.feedpoc.data.model.Result
 import com.android.feedpoc.ui.activity.FeedActivity
 import com.android.feedpoc.ui.adapter.FeedsAdapter
 import com.android.feedpoc.util.Constants
 import com.android.feedpoc.viewmodel.FeedsViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_feeds.*
 import kotlinx.android.synthetic.main.fragment_feeds.view.*
 
 
 class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    private val feedsViewModel: FeedsViewModel by viewModels()
     private lateinit var feedsAdapter: FeedsAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -40,15 +41,14 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             setOnRefreshListener(this@FeedsFragment)
         }
         feedsRecyclerView(view)
-        getFeeds()
         observeFeeds()
     }
 
     private fun getFeeds() {
         if (Constants.isNetworkAvailable(requireActivity()))
-            feedsViewModel.loadFeeds()
+         //feedsViewModel.loadFeeds()
         else {
-            showError(getString(R.string.network_error))
+            Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -61,7 +61,7 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         view.rv_feeds.adapter = feedsAdapter
     }
 
-    private fun startFeedDetailsFragment(item: FeedRow) {
+    private fun startFeedDetailsFragment(item: Feed) {
         requireActivity().supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment, FeedDetailFragment.newInstance(item))
             addToBackStack(null)
@@ -71,9 +71,11 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun observeFeeds() {
+        val feedsViewModel: FeedsViewModel by activityViewModels()
         val feedsObserver = Observer<Result> {
             handleFeedResponse(it)
         }
+        errorText.visibility = View.VISIBLE
         feedsViewModel.feeds().observe(viewLifecycleOwner, feedsObserver)
     }
 
@@ -84,7 +86,7 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun handleFeedResponse(feedResult: Result) {
         when (feedResult) {
             is Result.Success -> {
-                showFeeds(feedResult.feeds)
+                showFeeds(feedResult.country)
             }
             is Result.Failure -> {
                 showError(feedResult.exception)
@@ -92,13 +94,18 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    private fun showFeeds(feed: Feeds) {
-        feedsAdapter.updateFeedList(feed.rows)
-        updateTitle(feed.title)
+    private fun showFeeds(feed: Country) {
+        feed.rows?.let {
+            feedsAdapter.updateFeedList(it)
+            updateTitle(feed.title)
+        }
+
+        errorText.visibility = View.GONE
     }
 
     private fun showError(error: String) {
-        Snackbar.make(swipeRefreshLayout, error, Snackbar.LENGTH_SHORT).show()
+        errorText.visibility = View.VISIBLE
+        errorText.text = error
     }
 
     override fun onRefresh() {

@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.android.feedpoc.R
-import com.android.feedpoc.data.model.FeedRow
+import com.android.feedpoc.data.model.Feed
 import com.android.feedpoc.glide.GlideApp
 import com.android.feedpoc.ui.activity.FeedActivity
 
@@ -16,7 +16,7 @@ private const val FEED_ARG = "feed"
 
 class FeedDetailFragment : Fragment() {
 
-    private lateinit var feed: FeedRow
+    private lateinit var feed: Feed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class FeedDetailFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(feed: FeedRow) =
+        fun newInstance(feed: Feed) =
             FeedDetailFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(FEED_ARG, feed)
