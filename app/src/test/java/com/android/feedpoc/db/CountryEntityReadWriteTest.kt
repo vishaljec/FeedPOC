@@ -40,7 +40,7 @@ class CountryEntityReadWriteTest {
 
     @Test
     @Throws(Exception::class)
-     fun writeUserAndReadInList()= runBlocking {
+    suspend fun writeUserAndReadInList() {
         val country = sampleData()
         feedsDao.insertCountry(country)
 
