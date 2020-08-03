@@ -7,15 +7,15 @@ import androidx.room.Transaction
 import com.android.feedpoc.data.model.Country
 
 @Dao
-abstract class FeedsDao {
+interface FeedsDao {
 
     @Transaction
     @Query("SELECT * FROM country LIMIT 1")
-    abstract fun getCountry(): Country?
+    suspend fun getCountry(): Country?
 
     @Insert
-    abstract fun insertCountry(country: Country)
+      suspend fun insertCountry(country: Country)
 
     @Query("DELETE FROM Country")
-    abstract fun clear()
+     suspend fun clear()
 }
