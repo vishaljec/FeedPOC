@@ -27,6 +27,7 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var feedsAdapter: FeedsAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private val feedsViewModel: FeedsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,7 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun getFeeds() {
         if (Constants.isNetworkAvailable(requireActivity()))
-         //feedsViewModel.loadFeeds()
+         feedsViewModel.loadFeeds()
         else {
             Toast.makeText(context, R.string.network_error, Toast.LENGTH_SHORT).show()
         }
@@ -71,7 +72,6 @@ class FeedsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun observeFeeds() {
-        val feedsViewModel: FeedsViewModel by activityViewModels()
         val feedsObserver = Observer<Result> {
             handleFeedResponse(it)
         }

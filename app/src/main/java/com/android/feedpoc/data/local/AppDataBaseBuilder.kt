@@ -25,5 +25,5 @@ object AppDataBaseBuilder {
             context.applicationContext,
             AppDatabase::class.java,
             "feeds.db"
-        ).allowMainThreadQueries().build()
+        ).build()
 }

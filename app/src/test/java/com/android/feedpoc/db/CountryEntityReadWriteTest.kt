@@ -3,11 +3,13 @@ package com.android.feedpoc.db
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.runner.AndroidJUnit4
 import com.android.feedpoc.data.local.AppDatabase
 import com.android.feedpoc.data.local.dao.FeedsDao
 import com.android.feedpoc.data.model.Country
 import com.android.feedpoc.data.model.Feed
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.After
@@ -26,7 +28,7 @@ class CountryEntityReadWriteTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
             context, AppDatabase::class.java
-        ).allowMainThreadQueries().build()
+        ).build()
         feedsDao = db.getFeedsDao()
     }
 
@@ -38,7 +40,7 @@ class CountryEntityReadWriteTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeUserAndReadInList() {
+     fun writeUserAndReadInList()= runBlocking {
         val country = sampleData()
         feedsDao.insertCountry(country)
 
